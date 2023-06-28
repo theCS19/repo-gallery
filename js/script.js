@@ -4,6 +4,8 @@ const username = "theCS19";
 const repoList = document.querySelector(".repo-list");
 const repoClass = document.querySelector(".repos");
 const dataClass = document.querySelector(".repo-data");
+const hideButton = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 
 const apiFetch = async function () {
     const userInfo = await fetch (`https://api.github.com/users/${username}`);
@@ -40,6 +42,7 @@ const repoFetch = async function () {
 };
 
 const repoDisplay = function(repos) {
+  filterInput.classList.remove("hide");
   for (const repo of repos) {
     const repoItem = document.createElement("li");
     repoItem.classList.add("repo");
@@ -74,6 +77,7 @@ const showInfo = function(repoInfo,languages) {
   dataClass.innerHTML = "";
   dataClass.classList.remove("hide");
   repoClass.classList.add("hide");
+  hideButton.classList.remove("hide");
   const div = document.createElement("div");
   div.innerHTML = `
     <h3>Name: ${repoInfo.name}</h3>
@@ -85,3 +89,25 @@ const showInfo = function(repoInfo,languages) {
   dataClass.append(div);
   
 }
+
+hideButton.addEventListener("click", function() {
+  repoClass.classList.remove("hide");
+  dataClass.classList.add("hide");
+  hideButton.classList.add("hide");
+});
+
+filterInput.addEventListener("input", function(e) {
+  const searchText = e.target.value;
+  const repos = document.querySelectorAll(".repo");
+  const lowerSearch = searchText.toLowerCase();
+
+  for (const repo of repos) {
+    const lowerRepos = repo.innerText.toLowerCase();
+    if (lowerRepos.includes(lowerSearch)) {
+      repo.classList.remove("hide");
+    }
+    else {
+      repo.classList.add("hide");
+    }
+  }
+});
